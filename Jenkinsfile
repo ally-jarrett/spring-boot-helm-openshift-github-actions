@@ -16,6 +16,9 @@ openshift.withCluster() {
   echo "Starting Pipeline for ${env.APP_NAME}..."
   env.BUILD = "${env.NAMESPACE_BUILD}"
   env.DEV = "${env.NAMESPACE_DEV}"
+  env.MAVEN_SETTINGS = "${env.MAVEN_SETTINGS}"
+  env.MAVEN_SERVER_USERNAME = "${env.MAVEN_SERVER_USERNAME}"
+  env.MAVEN_SERVER_PASSWORD = "${env.MAVEN_SERVER_PASSWORD}"
 }
 
 
@@ -32,14 +35,14 @@ pipeline {
         // Run Maven build, skipping tests
         stage('Build'){
           steps {
-            sh "mvn -B clean install -DskipTests=true -f ${POM_FILE}"
+            sh "mvn -B clean install -DskipTests=true -f ${POM_FILE} -s ${MAVEN_SETTINGS}"
           }
         }
 
         // Run Maven unit tests
         stage('Unit Test'){
           steps {
-            sh "mvn -B test -f ${POM_FILE}"
+            sh "mvn -B test -f ${POM_FILE} -s ${MAVEN_SETTINGS}"
           }
         }
 
@@ -63,16 +66,16 @@ pipeline {
           }
         }
 
-        stage('Promote from Build to Dev') {
-          steps {
-            tagImage(sourceImageName: env.APP_NAME, sourceImagePath: env.BUILD, toImagePath: env.DEV)
-          }
-        }
-
-        stage ('Verify Deployment to Dev') {
-          steps {
-            verifyDeployment(projectName: env.DEV, targetApp: env.APP_NAME)
-          }
-        }
+//         stage('Promote from Build to Dev') {
+//           steps {
+//             tagImage(sourceImageName: env.APP_NAME, sourceImagePath: env.BUILD, toImagePath: env.DEV)
+//           }
+//         }
+//
+//         stage ('Verify Deployment to Dev') {
+//           steps {
+//             verifyDeployment(projectName: env.DEV, targetApp: env.APP_NAME)
+//           }
+//         }
     }
 }
