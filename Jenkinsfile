@@ -16,7 +16,6 @@ openshift.withCluster() {
   echo "Starting Pipeline for ${env.APP_NAME}..."
   env.BUILD = "${env.NAMESPACE_BUILD}"
   env.DEV = "${env.NAMESPACE_DEV}"
-  env.MAVEN_SETTINGS = "${env.MAVEN_SETTINGS}"
   env.MAVEN_SERVER_USERNAME = "${env.MAVEN_SERVER_USERNAME}"
   env.MAVEN_SERVER_PASSWORD = "${env.MAVEN_SERVER_PASSWORD}"
 }
@@ -35,14 +34,14 @@ pipeline {
         // Run Maven build, skipping tests
         stage('Build'){
           steps {
-            sh "mvn -B clean install -DskipTests=true -f ${POM_FILE} -s ${MAVEN_SETTINGS}"
+            sh "mvn -B clean install -DskipTests=true -f ${POM_FILE}"
           }
         }
 
         // Run Maven unit tests
         stage('Unit Test'){
           steps {
-            sh "mvn -B test -f ${POM_FILE} -s ${MAVEN_SETTINGS}"
+            sh "mvn -B test -f ${POM_FILE}"
           }
         }
 
