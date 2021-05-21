@@ -8,7 +8,7 @@ retriever: modernSCM(
 
 // The name you want to give your Spring Boot application
 // Each resource related to your app will be given this name
-appName = "hello-java-spring-boot"
+appName = "myapp-java-spring-boot-pipeline"
 
 openshift.withCluster() {
   env.NAMESPACE = openshift.project()
