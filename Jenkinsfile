@@ -36,16 +36,14 @@ pipeline {
         }
 
         // Run Maven build, skipping tests
-        withMaven(serviceAccount: "jenkins", mavenSettingsXmlSecret: "maven-secret") {
-            container('maven') {
-                stage('Maven Build'){
+        stage('Maven Build'){
+            withMaven(serviceAccount: "jenkins", mavenSettingsXmlSecret: "maven-secret") {
                     steps {
                         container('maven') {
                             sh "mvn -version"
                         }
                     }
                 }
-            }
         }
     }
 }
