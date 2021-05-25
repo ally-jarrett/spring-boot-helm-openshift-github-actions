@@ -17,6 +17,39 @@ openshift.withCluster() {
   env.DEV = "${env.NAMESPACE_DEV}"
 }
 
+podTemplate(yaml:'''
+spec:
+  containers:
+  - name: maven
+    image: image-registry.openshift-image-registry.svc:5000/openshift/jenkins-agent-maven:latest
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+    - name: home-volume
+      mountPath: /home/jenkins
+    env:
+    - name: HOME
+      value: /home/jenkins
+    - name: MAVEN_OPTS
+      value: -Duser.home=/home/jenkins
+    - name: MAVEN_SERVER_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: nexus-secret
+          key: username
+    - name: MAVEN_SERVER_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: nexus-secret
+          key: password
+  volumes:
+    - name: home-volume
+      emptyDir: {}
+    - name: maven-settings
+      configMap:
+      name: maven-settings
+''')
 
 pipeline {
     // Use the 'maven' Jenkins agent image which is provided with OpenShift
@@ -38,12 +71,10 @@ pipeline {
         // Run Maven build, skipping tests
         stage('Maven Build'){
             steps {
-            withMaven(serviceAccount: "jenkins", mavenSettingsXmlSecret: "maven-secret") {
-                        container('maven') {
-                            sh "mvn -version"
-                        }
-                    }
+                container('maven') {
+                    sh "mvn -version"
                 }
+            }
         }
     }
 }
