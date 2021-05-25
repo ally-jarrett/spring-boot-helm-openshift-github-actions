@@ -31,7 +31,7 @@ pipeline {
             spec:
               containers:
               - name: maven
-                image: openshift/jenkins-agent-maven:latest
+                image: image-registry.openshift-image-registry.svc:5000/openshift/jenkins-agent-maven:latest
                 command:
                 - cat
                 tty: true
