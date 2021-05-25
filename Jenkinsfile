@@ -38,13 +38,10 @@ pipeline {
                 command:
                 - cat
                 tty: true
-              - resources:
+                volumeMounts:
+                - name: maven-settings
+                  mountPath: /etc/config/settings.xml
                 env:
-                  - name: MAVEN_SETTINGS
-                    valueFrom:
-                      configMapKeyRef:
-                        name: maven-settings
-                        key: settings.xml
                   - name: MAVEN_SERVER_USERNAME
                     valueFrom:
                       secretKeyRef:
@@ -58,7 +55,7 @@ pipeline {
               volumes:
                 - name: maven-settings
                   configMap:
-                  name: maven-settings
+                    name: maven-settings
             """.stripIndent()
         }
     }
