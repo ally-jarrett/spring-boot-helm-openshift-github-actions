@@ -66,21 +66,27 @@ pipeline {
         // Run Maven build, skipping tests
         stage('Maven Build'){
           steps {
-            sh "mvn -B clean install -DskipTests=true -f ${POM_FILE}"
+           container('maven') {
+                sh "mvn -B clean install -DskipTests=true -f ${POM_FILE}"
+            }
           }
         }
 
         // Run Maven unit tests
         stage('Maven Unit Test'){
           steps {
-            sh "mvn -B test -f ${POM_FILE}"
+            container('maven') {
+                sh "mvn -B test -f ${POM_FILE}"
+            }
           }
         }
 
         // Run Maven unit tests
         stage('Maven Deploy'){
           steps {
-            sh "mvn -B clean deploy -DskipTests -f ${POM_FILE}"
+            container('maven') {
+                sh "mvn -B clean deploy -DskipTests -f ${POM_FILE}"
+            }
           }
         }
 
