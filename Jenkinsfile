@@ -31,7 +31,7 @@ pipeline {
         stage('Demo') {
             steps {
                 echo 'Hello world'
-                mylibrary.sayHello 'Dave'
+                sayHello 'Dave'
             }
         }
 
