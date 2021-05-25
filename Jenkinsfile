@@ -23,7 +23,45 @@ openshift.withCluster() {
 
 pipeline {
     // Use the 'maven' Jenkins agent image which is provided with OpenShift
-    agent { label "maven" }
+    agent {
+        kubernetes {
+          yaml """\
+            apiVersion: v1
+            kind: Pod
+            metadata:
+              labels:
+                some-label: some-label-value
+            spec:
+              containers:
+              - name: maven
+                image: maven:alpine
+                command:
+                - cat
+                tty: true
+              - resources:
+                env:
+                  - name: MAVEN_SETTINGS
+                    valueFrom:
+                      configMapKeyRef:
+                        name: maven-settings
+                        key: settings.xml
+                  - name: MAVEN_SERVER_USERNAME
+                    valueFrom:
+                      secretKeyRef:
+                        name: nexus-secret
+                        key: username
+                  - name: MAVEN_SERVER_PASSWORD
+                    valueFrom:
+                      secretKeyRef:
+                        name: nexus-secret
+                        key: password
+              volumes:
+                - name: maven-settings
+                  configMap:
+                  name: maven-settings
+            """.stripIndent()
+        }
+    }
     stages {
         stage("Checkout") {
             steps {
@@ -32,16 +70,23 @@ pipeline {
         }
 
         // Run Maven build, skipping tests
-        stage('Build'){
+        stage('Maven Build'){
           steps {
             sh "mvn -B clean install -DskipTests=true -f ${POM_FILE}"
           }
         }
 
         // Run Maven unit tests
-        stage('Unit Test'){
+        stage('Maven Unit Test'){
           steps {
             sh "mvn -B test -f ${POM_FILE}"
+          }
+        }
+
+        // Run Maven unit tests
+        stage('Maven Deploy'){
+          steps {
+            sh "mvn -B clean deploy -DskipTests -f ${POM_FILE}"
           }
         }
 
