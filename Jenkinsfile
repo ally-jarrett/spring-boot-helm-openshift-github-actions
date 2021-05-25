@@ -31,17 +31,21 @@ pipeline {
         stage('Demo') {
             steps {
                 echo 'Hello world'
-                sayHello 'Dave'
+                mylibrary.sayHello 'Dave'
             }
         }
 
         // Run Maven build, skipping tests
-        stage('Maven Build'){
-          steps {
-           container('maven') {
-                sh "mvn -B clean install -DskipTests=true -f ${POM_FILE}"
+        withMaven(serviceAccount: "jenkins", mavenSettingsXmlSecret: "m2-settings") {
+            container('maven') {
+                stage('Maven Build'){
+                    steps {
+                        container('maven') {
+                            sh "mvn -version"
+                        }
+                    }
+                }
             }
-          }
         }
     }
 }
