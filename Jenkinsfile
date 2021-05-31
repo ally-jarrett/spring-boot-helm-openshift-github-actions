@@ -18,7 +18,7 @@ openshift.withCluster() {
   env.DEV = "${env.NAMESPACE_DEV}"
   env.MAVEN_SERVER_USERNAME = "${env.MAVEN_SERVER_USERNAME}"
   env.MAVEN_SERVER_PASSWORD = "${env.MAVEN_SERVER_PASSWORD}"
-  env.MAVEN_SETTINGS = "/etc/config/settings.xml"
+  env.MAVEN_SETTINGS = "/etc/data/settings.xml"
 }
 
 
@@ -38,7 +38,7 @@ pipeline {
                 tty: true
                 volumeMounts:
                 - name: maven-settings
-                  mountPath: /etc/config/settings.xml
+                  mountPath: /etc/data/settings.xml
                 env:
                   - name: MAVEN_SERVER_USERNAME
                     value: https://nexus-nexus.apps.ocp1.purplesky.cloud/repository/maven-public/
