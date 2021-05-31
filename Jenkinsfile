@@ -69,7 +69,7 @@ pipeline {
         stage('Maven CHECK'){
           steps {
            container('maven') {
-                sh "ls -la ${MAVEN_SETTINGS}"
+                sh "ls -la ${MAVEN_SETTINGS} && cat ${MAVEN_SETTINGS}"
                 sh "mvn -version"
             }
           }
