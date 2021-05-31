@@ -36,6 +36,13 @@ pipeline {
                 command:
                 - cat
                 tty: true
+                resources:
+                  requests:
+                    cpu: 200m
+                    memory: 256Mi
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
                 volumeMounts:
                 - name: maven-settings
                   mountPath: /etc/data
