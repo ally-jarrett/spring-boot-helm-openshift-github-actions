@@ -38,7 +38,7 @@ pipeline {
                 tty: true
                 volumeMounts:
                 - name: maven-settings
-                  mountPath: /etc/data/settings.xml
+                  mountPath: /etc/data
                 env:
                   - name: MAVEN_SERVER_USERNAME
                     value: https://nexus-nexus.apps.ocp1.purplesky.cloud/repository/maven-public/
