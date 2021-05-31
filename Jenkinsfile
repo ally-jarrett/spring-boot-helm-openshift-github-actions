@@ -18,6 +18,7 @@ openshift.withCluster() {
   env.DEV = "${env.NAMESPACE_DEV}"
   env.MAVEN_SERVER_USERNAME = "${env.MAVEN_SERVER_USERNAME}"
   env.MAVEN_SERVER_PASSWORD = "${env.MAVEN_SERVER_PASSWORD}"
+  env.MAVEN_SETTINGS = "/etc/config/settings.xml"
 }
 
 
@@ -67,7 +68,7 @@ pipeline {
         stage('Maven Build'){
           steps {
            container('maven') {
-                sh "mvn -B clean install -DskipTests=true -f ${POM_FILE}"
+                sh "mvn -B clean install -DskipTests=true -f ${POM_FILE} -s ${MAVEN_SETTINGS}"
             }
           }
         }
@@ -76,7 +77,7 @@ pipeline {
         stage('Maven Unit Test'){
           steps {
             container('maven') {
-                sh "mvn -B test -f ${POM_FILE}"
+                sh "mvn -B test -f ${POM_FILE} -s ${MAVEN_SETTINGS}"
             }
           }
         }
@@ -85,7 +86,7 @@ pipeline {
         stage('Maven Deploy'){
           steps {
             container('maven') {
-                sh "mvn -B clean deploy -DskipTests -f ${POM_FILE}"
+                sh "mvn -B clean deploy -DskipTests -f ${POM_FILE} -s ${MAVEN_SETTINGS}"
             }
           }
         }
