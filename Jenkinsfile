@@ -41,6 +41,8 @@ pipeline {
                   mountPath: /etc/config/settings.xml
                 env:
                   - name: MAVEN_SERVER_USERNAME
+                    value: https://nexus-nexus.apps.ocp1.purplesky.cloud/repository/maven-public/
+                  - name: MAVEN_SERVER_USERNAME
                     valueFrom:
                       secretKeyRef:
                         name: nexus-secret
@@ -62,6 +64,15 @@ pipeline {
             steps {
                 checkout scm
             }
+        }
+
+        stage('Maven CHECK'){
+          steps {
+           container('maven') {
+                sh "ls -la ${MAVEN_SETTINGS}"
+                sh "mvn -version"
+            }
+          }
         }
 
         // Run Maven build, skipping tests
