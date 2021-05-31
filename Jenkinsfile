@@ -40,7 +40,7 @@ pipeline {
                 - name: maven-settings
                   mountPath: /etc/data
                 env:
-                  - name: MAVEN_SERVER_USERNAME
+                  - name: MAVEN_MIRROR_URL
                     value: https://nexus-nexus.apps.ocp1.purplesky.cloud/repository/maven-public/
                   - name: MAVEN_SERVER_USERNAME
                     valueFrom:
